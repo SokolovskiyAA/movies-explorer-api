@@ -18,8 +18,8 @@ mongoose.connect('mongodb://localhost:27017/moviesdb', {
 
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  'https://mesto.sokolovskiy.students.nomoredomains.sbs',
-  'http://mesto.sokolovskiy.students.nomoredomains.sbs',
+  'https://movies.sok.nomoredomains.sbs',
+  'http://movies.sok.nomoredomains.sbs',
   'http://localhost:3000',
 ];
 
