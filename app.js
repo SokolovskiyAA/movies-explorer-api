@@ -3,25 +3,22 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { allowedCors, DEV_PORT, DEV_DATABASE_ADDRESS } = require('./utils/config');
 
-const { PORT = 3001 } = process.env;
+const { NODE_ENV, PROD_PORT, PROD_DATABASE_ADDRESS } = process.env;
+
+const PORT = NODE_ENV === 'production' ? PROD_PORT : DEV_PORT;
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-mongoose.connect('mongodb://localhost:27017/moviesdb', {
+mongoose.connect(NODE_ENV === 'production' ? PROD_DATABASE_ADDRESS : DEV_DATABASE_ADDRESS, {
   useNewUrlParser: true,
 });
 
-// Массив доменов, с которых разрешены кросс-доменные запросы
-const allowedCors = [
-  'https://movies.sok.nomoredomains.sbs',
-  'http://movies.sok.nomoredomains.sbs',
-  'http://localhost:3000',
-];
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
@@ -56,6 +53,8 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+app.use(helmet());
+
 app.use('/', require('./routes'));
 
 app.use(errorLogger);
@@ -71,4 +70,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
-
