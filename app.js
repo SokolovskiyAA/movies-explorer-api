@@ -1,19 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { allowedCors, DEV_PORT, DEV_DATABASE_ADDRESS } = require('./utils/config');
+const { allowedCors } = require('./utils/config');
 
-const { NODE_ENV, PROD_PORT, PROD_DATABASE_ADDRESS } = process.env;
-
-const PORT = NODE_ENV === 'production' ? PROD_PORT : DEV_PORT;
+const { PORT = 3001 } = process.env;
 const app = express();
 
-mongoose.connect(NODE_ENV === 'production' ? PROD_DATABASE_ADDRESS : DEV_DATABASE_ADDRESS, {
+mongoose.connect('mongodb://localhost:27017/moviesdb', {
   useNewUrlParser: true,
 });
 
