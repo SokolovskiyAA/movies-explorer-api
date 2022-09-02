@@ -1,11 +1,10 @@
 const { Movie } = require('../models/movies');
-const status = require('../utils/status');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
 const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({ owner: mongoose.Types.ObjectId(req.user._id) })
+  Movie.find({ owner: req.user._id })
     .sort({ createdAt: -1 })
     .then((movies) => res.send(movies))
     .catch(next);
@@ -20,7 +19,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     thumbnail,
     movieId,
     nameRU,
@@ -39,14 +38,14 @@ module.exports.createMovie = (req, res, next) => {
           year,
           description,
           image,
-          trailer,
+          trailerLink,
           thumbnail,
           owner: req.user._id,
           movieId,
           nameRU,
           nameEN,
         })
-          .then((movie) => res.send(movie))
+          .then((movies) => res.send(movies))
           .catch(next);
       }
     })

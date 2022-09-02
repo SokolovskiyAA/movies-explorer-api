@@ -27,7 +27,7 @@ module.exports.getUser = (req, res, next) => {
     });
 };
 
-//Обновить информацию о пользователе
+// Обновить информацию о пользователе
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
   User.findOneAndUpdate({ _id: req.user._id }, { name, email }, { new: true, runValidators: true })
@@ -58,7 +58,7 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-//Регистрация
+// Регистрация
 module.exports.createUser = (req, res, next) => {
   const {
     name, email, password,
@@ -85,4 +85,3 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch(next);
 };
-
