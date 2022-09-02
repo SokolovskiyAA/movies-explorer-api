@@ -8,10 +8,10 @@ const rateLimit = require('express-rate-limit');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { allowedCors } = require('./utils/config');
 
-const { PORT = 3001 } = process.env;
+const { PORT = 3001, DATABASE_ADDRESS = 'mongodb://localhost:27017/moviesdb' } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/moviesdb', {
+mongoose.connect(`${DATABASE_ADDRESS}`, {
   useNewUrlParser: true,
 });
 

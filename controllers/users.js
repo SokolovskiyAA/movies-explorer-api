@@ -10,7 +10,7 @@ const { NODE_ENV, JWT_SECRET = 'dev-secret' } = process.env;
 
 // Получение информации о пользователе
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.status(status.OK).send(user);

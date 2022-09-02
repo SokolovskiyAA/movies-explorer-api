@@ -12,7 +12,7 @@ movieRouter.post('/movies', celebrate({
     year: Joi.string().required(),
     description: Joi.string().required(),
     image: Joi.string().uri().required(),
-    trailer: Joi.string().uri().required(),
+    trailerLink: Joi.string().uri().required(),
     thumbnail: Joi.string().uri().required(),
     movieId: Joi.number().integer().required(),
     nameRU: Joi.string().required(),

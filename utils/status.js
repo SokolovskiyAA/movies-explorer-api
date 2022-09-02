@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 const Status = {
   OK: 200,
   CREATED: 201,
