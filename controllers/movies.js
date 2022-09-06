@@ -28,7 +28,6 @@ module.exports.createMovie = (req, res, next) => {
 
   Movie.find({ movieId, owner: req.user._id })
     .then((movie) => {
-      console.log(movie);
       if (movie.length > 0) {
         throw new BadRequestError('Вы уже сохранили этот фильм');
       } else {
