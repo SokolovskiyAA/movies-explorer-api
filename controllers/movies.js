@@ -1,4 +1,4 @@
-const { Movie } = require('../models/movies');
+const Movie = require('../models/movies');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
 const ForbiddenError = require('../errors/forbidden-error');
@@ -28,6 +28,7 @@ module.exports.createMovie = (req, res, next) => {
 
   Movie.find({ movieId, owner: req.user._id })
     .then((movie) => {
+      console.log(movie);
       if (movie.length > 0) {
         throw new BadRequestError('Вы уже сохранили этот фильм');
       } else {
