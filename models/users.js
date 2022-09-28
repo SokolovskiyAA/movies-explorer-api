@@ -43,4 +43,4 @@ userSchema.statics.findUserByCredentials = function findUser(email, password, ne
     .catch(next);
 };
 
-module.exports.User = mongoose.model('user', userSchema);
+module.exports = mongoose.model('user', userSchema);
