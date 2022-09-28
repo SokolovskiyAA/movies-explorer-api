@@ -1,29 +1,22 @@
 require('dotenv').config();
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi, errors } = require('celebrate');
-const auth = require('./middlewares/auth');
-const { createUser, login } = require('./controllers/users');
-const NotFoundError = require('./errors/not-found-error');
+const { errors } = require('celebrate');
+const rateLimit = require('express-rate-limit');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { allowedCors } = require('./utils/config');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001, DATABASE_ADDRESS = 'mongodb://localhost:27017/moviesdb' } = process.env;
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-mongoose.connect('mongodb://localhost:27017/moviesdb', {
+mongoose.connect(`${DATABASE_ADDRESS}`, {
   useNewUrlParser: true,
 });
 
-// Массив доменов, с которых разрешены кросс-доменные запросы
-const allowedCors = [
-  'https://mesto.sokolovskiy.students.nomoredomains.sbs',
-  'http://mesto.sokolovskiy.students.nomoredomains.sbs',
-  'http://localhost:3000',
-];
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
@@ -50,24 +43,16 @@ app.use((req, res, next) => {
 
 app.use(requestLogger);
 
-app.use('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
+// Ограничение количества запросов в единицу времени
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+});
 
-app.use('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(/(https?:\/\/)[a-zA-Z.:0-9-?]{2,}\.[a-z]{2,}([-a-zA-Z0-9@:%_+.~#?&=/]*)/),
-  }),
-}), createUser);
+app.use(limiter);
 
-app.use(auth);
+app.use(helmet());
+
 app.use('/', require('./routes'));
 
 app.use(errorLogger);
@@ -81,7 +66,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`);
 });
-

@@ -10,7 +10,7 @@ const { NODE_ENV, JWT_SECRET = 'dev-secret' } = process.env;
 
 // Получение информации о пользователе
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.status(status.OK).send(user);
@@ -27,7 +27,7 @@ module.exports.getUser = (req, res, next) => {
     });
 };
 
-//Обновить информацию о пользователе
+// Обновить информацию о пользователе
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
   User.findOneAndUpdate({ _id: req.user._id }, { name, email }, { new: true, runValidators: true })
@@ -40,6 +40,8 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Введены некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Данный email уже используется'));
       } else {
         next(err);
       }
@@ -58,7 +60,7 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-//Регистрация
+// Регистрация
 module.exports.createUser = (req, res, next) => {
   const {
     name, email, password,
@@ -85,4 +87,3 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch(next);
 };
-

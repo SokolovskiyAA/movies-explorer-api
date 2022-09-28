@@ -21,11 +21,14 @@
   "homepage": "https://github.com/SokolovskiyAA/movies-explorer-api#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
     "celebrate": "^15.0.1",
     "dotenv": "^16.0.1",
     "eslintrc": "^1.0.6",
     "express": "^4.18.1",
+    "express-rate-limit": "^6.5.2",
     "express-winston": "^4.2.0",
+    "helmet": "^6.0.0",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.3",
@@ -33,7 +36,9 @@
     "winston": "^3.8.1"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
+    "eslint": "^7.23.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "nodemon": "^2.0.19"
   }
 }
